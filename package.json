@@ -69,13 +69,19 @@
             "x64"
           ]
         }
-      ],
-      "artifactName": "Clover-${version}-${arch}.${ext}"
+      ]
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
-      "perMachine": false
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Clover",
+      "artifactName": "Clover-Setup-${version}-${arch}.${ext}"
+    },
+    "portable": {
+      "artifactName": "Clover-Portable-${version}-${arch}.${ext}"
     },
     "linux": {
       "target": [
