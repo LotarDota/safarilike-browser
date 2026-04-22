@@ -1,0 +1,239 @@
+:root {
+  --bg: #f2f2f7;
+  --fg: #1c1c1e;
+  --muted: rgba(28, 28, 30, 0.55);
+  --card: #ffffff;
+  --card-border: rgba(0, 0, 0, 0.08);
+  --accent: #0a84ff;
+  --divider: rgba(0, 0, 0, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1a1d;
+    --fg: #f2f2f7;
+    --muted: rgba(242, 242, 247, 0.6);
+    --card: #2c2c2f;
+    --card-border: rgba(255, 255, 255, 0.08);
+    --divider: rgba(255, 255, 255, 0.08);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: -apple-system, 'Segoe UI Variable', 'Segoe UI', system-ui, sans-serif;
+  font-size: 14px;
+}
+
+.settings {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  height: 100%;
+}
+
+.sidebar {
+  border-right: 1px solid var(--divider);
+  padding: 16px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar .pill {
+  padding: 8px 12px;
+  border-radius: 7px;
+  color: inherit;
+  font-size: 13px;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+  transition: background 100ms ease;
+}
+
+.sidebar .pill:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.sidebar .pill.active {
+  background: var(--accent);
+  color: white;
+}
+
+.content {
+  padding: 32px 40px;
+  overflow-y: auto;
+}
+
+.content h2 {
+  margin: 0 0 20px;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 4px 16px;
+  margin-bottom: 24px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 16px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--divider);
+}
+
+.row:last-child {
+  border-bottom: 0;
+}
+
+.row label {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.row input[type='text'],
+.row input[type='email'],
+.row input[type='url'],
+.row input[type='password'],
+.row select {
+  width: 100%;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  background: var(--bg);
+  color: inherit;
+  font: inherit;
+  outline: none;
+}
+
+.row input[type='text']:focus,
+.row input[type='email']:focus,
+.row input[type='url']:focus,
+.row input[type='password']:focus,
+.row select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.2);
+}
+
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.switch input[type='checkbox'] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 40px;
+  height: 24px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.2);
+  position: relative;
+  outline: none;
+  cursor: pointer;
+  transition: background 140ms ease;
+}
+
+.switch input[type='checkbox']::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ffffff;
+  transition: transform 140ms ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.switch input[type='checkbox']:checked {
+  background: #34c759;
+}
+
+.switch input[type='checkbox']:checked::before {
+  transform: translateX(16px);
+}
+
+button.primary {
+  background: var(--accent);
+  color: white;
+  border-radius: 8px;
+  padding: 7px 14px;
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+button.primary:hover {
+  filter: brightness(1.08);
+}
+
+button.secondary {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.extensions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.extensions .ext {
+  display: grid;
+  grid-template-columns: 32px 1fr auto auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+}
+
+.extensions .ext .ico {
+  width: 32px;
+  height: 32px;
+  border-radius: 7px;
+  background: linear-gradient(135deg, #34c759, #30b0c7);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.extensions .ext .meta h4 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.extensions .ext .meta p {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}

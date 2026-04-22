@@ -1,0 +1,98 @@
+{
+  "name": "clover-browser",
+  "version": "0.1.0",
+  "description": "A Safari-like web browser for Windows 11, built with Electron + Chromium.",
+  "author": "LotarDota <pooonavi@gmail.com>",
+  "license": "MIT",
+  "main": "dist/main/index.js",
+  "private": true,
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development node scripts/dev.mjs",
+    "build": "npm run build:main && npm run build:preload && npm run build:renderer",
+    "build:main": "tsc -p tsconfig.main.json",
+    "build:preload": "tsc -p tsconfig.preload.json",
+    "build:renderer": "vite build",
+    "start": "npm run build && electron .",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
+    "typecheck": "tsc -p tsconfig.main.json --noEmit && tsc -p tsconfig.preload.json --noEmit && tsc -p tsconfig.renderer.json --noEmit",
+    "package:win": "npm run build && electron-builder --win --x64",
+    "package:linux": "npm run build && electron-builder --linux --x64",
+    "sync-server": "node scripts/sync-server.mjs"
+  },
+  "dependencies": {
+    "@mozilla/readability": "^0.5.0",
+    "electron-chrome-extensions": "^4.3.0",
+    "electron-chrome-web-store": "^0.13.0",
+    "electron-store": "^8.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^7.13.1",
+    "@typescript-eslint/parser": "^7.13.1",
+    "@vitejs/plugin-react": "^4.3.1",
+    "cross-env": "^7.0.3",
+    "electron": "^31.0.2",
+    "electron-builder": "^24.13.3",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.34.2",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.4.5",
+    "vite": "^5.3.1"
+  },
+  "build": {
+    "appId": "dev.lotardota.clover",
+    "productName": "Clover",
+    "files": [
+      "dist/**",
+      "resources/**",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "**/node_modules/electron-chrome-extensions/dist/**",
+      "**/node_modules/electron-chrome-extensions/preload-build/**",
+      "**/node_modules/electron-chrome-web-store/dist/**"
+    ],
+    "directories": {
+      "buildResources": "resources",
+      "output": "release"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Clover",
+      "artifactName": "Clover-Setup-${version}-${arch}.${ext}"
+    },
+    "portable": {
+      "artifactName": "Clover-Portable-${version}-${arch}.${ext}"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Network"
+    }
+  }
+}

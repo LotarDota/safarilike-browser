@@ -1,0 +1,500 @@
+/*
+ * Clover chrome styling — aims for parity with macOS Safari (Sonoma+):
+ * a translucent frosted-glass toolbar that adapts to the active page's theme
+ * color, rounded pill-shaped tabs with subtle gradients, and a centered
+ * combined search/address bar.
+ */
+
+:root {
+  --chrome-bg: #f6f6f7;
+  --chrome-bg-accent: rgba(246, 246, 247, 0.72);
+  --chrome-fg: #1c1c1e;
+  --chrome-fg-muted: rgba(28, 28, 30, 0.6);
+  --chrome-border: rgba(0, 0, 0, 0.09);
+  --tab-active-bg: #ffffff;
+  --tab-active-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), 0 0 0 0.5px rgba(0, 0, 0, 0.06);
+  --tab-inactive-bg: transparent;
+  --tab-hover-bg: rgba(0, 0, 0, 0.06);
+  --omnibox-bg: rgba(255, 255, 255, 0.82);
+  --omnibox-border: rgba(0, 0, 0, 0.14);
+  --omnibox-focus: #0a84ff;
+  --accent: #0a84ff;
+  --favbar-bg: rgba(255, 255, 255, 0.4);
+  --shadow-soft: 0 1px 1px rgba(0, 0, 0, 0.04);
+  --titlebar-height: 0px; /* Windows overlay handled by Electron */
+  --chrome-total-height: 88px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --chrome-bg: #1f1f22;
+    --chrome-bg-accent: rgba(31, 31, 34, 0.72);
+    --chrome-fg: #f2f2f7;
+    --chrome-fg-muted: rgba(242, 242, 247, 0.6);
+    --chrome-border: rgba(255, 255, 255, 0.08);
+    --tab-active-bg: #3a3a3d;
+    --tab-active-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 0 0 0.5px rgba(255, 255, 255, 0.06);
+    --tab-inactive-bg: transparent;
+    --tab-hover-bg: rgba(255, 255, 255, 0.08);
+    --omnibox-bg: rgba(58, 58, 61, 0.85);
+    --omnibox-border: rgba(255, 255, 255, 0.1);
+    --favbar-bg: rgba(48, 48, 52, 0.4);
+  }
+}
+
+:root[data-private='true'] {
+  --chrome-bg: #2b2a34;
+  --chrome-bg-accent: rgba(43, 42, 52, 0.84);
+  --chrome-fg: #efe8ff;
+  --chrome-fg-muted: rgba(239, 232, 255, 0.65);
+  --chrome-border: rgba(255, 255, 255, 0.1);
+  --tab-active-bg: #464052;
+  --tab-active-shadow: 0 1px 2px rgba(0, 0, 0, 0.45), 0 0 0 0.5px rgba(255, 255, 255, 0.08);
+  --omnibox-bg: rgba(71, 64, 85, 0.9);
+  --accent: #bf5af2;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  font-family:
+    -apple-system,
+    'Segoe UI Variable',
+    'Segoe UI',
+    BlinkMacSystemFont,
+    'Helvetica Neue',
+    system-ui,
+    sans-serif;
+  font-size: 13px;
+  color: var(--chrome-fg);
+  background: var(--chrome-bg);
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+input {
+  font: inherit;
+}
+
+/* ----------------------------------------------------------------------- */
+/*  Layout                                                                  */
+/* ----------------------------------------------------------------------- */
+
+.app {
+  display: grid;
+  grid-template-rows: var(--chrome-total-height, 88px) 1fr;
+  height: 100vh;
+  width: 100vw;
+  background: transparent;
+}
+
+.chrome {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--chrome-bg-accent);
+  backdrop-filter: saturate(1.8) blur(22px);
+  -webkit-backdrop-filter: saturate(1.8) blur(22px);
+  border-bottom: 1px solid var(--chrome-border);
+  -webkit-app-region: drag;
+}
+
+.chrome button,
+.chrome input,
+.chrome .no-drag {
+  -webkit-app-region: no-drag;
+}
+
+/* ----------------------------------------------------------------------- */
+/*  Tab strip                                                               */
+/* ----------------------------------------------------------------------- */
+
+.tab-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  padding: 6px 140px 0 12px; /* Leave space for Windows caption buttons */
+  height: 44px;
+  overflow: hidden;
+}
+
+.tab {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 80px;
+  max-width: 240px;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 8px 8px 0 0;
+  background: var(--tab-inactive-bg);
+  color: var(--chrome-fg-muted);
+  transition: background 120ms ease, color 120ms ease;
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.tab:hover {
+  background: var(--tab-hover-bg);
+}
+
+.tab.active {
+  background: var(--tab-active-bg);
+  color: var(--chrome-fg);
+  box-shadow: var(--tab-active-shadow);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.tab.private::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--accent);
+  flex: 0 0 auto;
+}
+
+.tab .favicon {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: var(--chrome-fg-muted);
+}
+
+.tab .title {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0;
+}
+
+.tab .close {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 100ms ease, background 100ms ease;
+}
+
+.tab:hover .close,
+.tab.active .close {
+  opacity: 1;
+}
+
+.tab .close:hover {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.tab-row .add-tab {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 28px;
+  margin-left: 2px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--chrome-fg-muted);
+}
+
+.tab-row .add-tab:hover {
+  background: var(--tab-hover-bg);
+  color: var(--chrome-fg);
+}
+
+/* ----------------------------------------------------------------------- */
+/*  Toolbar (nav + omnibox)                                                 */
+/* ----------------------------------------------------------------------- */
+
+.toolbar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 12px 8px;
+  height: 44px;
+}
+
+.nav-group {
+  display: flex;
+  gap: 2px;
+  padding-left: 2px;
+}
+
+.icon-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--chrome-fg);
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.icon-btn:disabled {
+  color: var(--chrome-fg-muted);
+  opacity: 0.45;
+  cursor: default;
+}
+
+.icon-btn:not(:disabled):hover {
+  background: var(--tab-hover-bg);
+}
+
+.icon-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.omnibox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 10px;
+  background: var(--omnibox-bg);
+  border: 1px solid var(--omnibox-border);
+  border-radius: 8px;
+  color: var(--chrome-fg);
+  box-shadow: var(--shadow-soft);
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.omnibox:focus-within {
+  border-color: var(--omnibox-focus);
+  box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.2);
+}
+
+.omnibox .lock {
+  flex: 0 0 auto;
+  color: var(--chrome-fg-muted);
+  font-size: 11px;
+}
+
+.omnibox input {
+  flex: 1 1 auto;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: inherit;
+  font-size: 13px;
+  -webkit-app-region: no-drag;
+  user-select: text;
+}
+
+.omnibox input::placeholder {
+  color: var(--chrome-fg-muted);
+}
+
+.omnibox .reload,
+.omnibox .bookmark,
+.omnibox .reader {
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--chrome-fg-muted);
+}
+
+.omnibox .reload:hover,
+.omnibox .bookmark:hover,
+.omnibox .reader:hover {
+  background: rgba(0, 0, 0, 0.08);
+  color: var(--chrome-fg);
+}
+
+.actions-group {
+  display: flex;
+  gap: 2px;
+  padding-right: 130px; /* Windows caption button area */
+}
+
+/* ----------------------------------------------------------------------- */
+/*  Suggestions dropdown                                                    */
+/* ----------------------------------------------------------------------- */
+
+.suggestions {
+  position: absolute;
+  top: calc(var(--chrome-total-height, 88px) - 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(760px, calc(100vw - 220px));
+  max-height: 320px;
+  overflow-y: auto;
+  background: var(--omnibox-bg);
+  border: 1px solid var(--omnibox-border);
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  backdrop-filter: saturate(1.8) blur(22px);
+  z-index: 30;
+  padding: 4px 0;
+}
+
+.suggestion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  color: var(--chrome-fg);
+  font-size: 13px;
+  cursor: default;
+}
+
+.suggestion.highlight,
+.suggestion:hover {
+  background: var(--accent);
+  color: white;
+}
+
+.suggestion .kind {
+  width: 16px;
+  text-align: center;
+  opacity: 0.7;
+}
+
+.suggestion .label {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.suggestion .hint {
+  opacity: 0.65;
+  font-size: 11px;
+}
+
+/* ----------------------------------------------------------------------- */
+/*  Favorites bar                                                           */
+/* ----------------------------------------------------------------------- */
+
+.favbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 14px;
+  background: var(--favbar-bg);
+  border-bottom: 1px solid var(--chrome-border);
+  overflow-x: auto;
+  height: 34px;
+}
+
+.favbar::-webkit-scrollbar {
+  display: none;
+}
+
+.fav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  color: var(--chrome-fg);
+  font-size: 12px;
+  max-width: 180px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.fav:hover {
+  background: var(--tab-hover-bg);
+}
+
+.fav .favicon {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  color: var(--chrome-fg-muted);
+  flex: 0 0 auto;
+}
+
+.fav .title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ----------------------------------------------------------------------- */
+/*  Viewport placeholder                                                    */
+/* ----------------------------------------------------------------------- */
+
+.viewport {
+  position: relative;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+@media (prefers-color-scheme: dark) {
+  .viewport {
+    background: #1c1c1e;
+  }
+}
+
+/* ----------------------------------------------------------------------- */
+/*  Find-in-page bar                                                        */
+/* ----------------------------------------------------------------------- */
+
+.find-bar {
+  position: absolute;
+  top: 8px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--omnibox-bg);
+  border: 1px solid var(--omnibox-border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  z-index: 20;
+}
+
+.find-bar input {
+  border: 0;
+  background: transparent;
+  color: var(--chrome-fg);
+  outline: none;
+  width: 200px;
+  user-select: text;
+}
