@@ -51,6 +51,11 @@
       "resources/**",
       "package.json"
     ],
+    "asarUnpack": [
+      "**/node_modules/electron-chrome-extensions/dist/**",
+      "**/node_modules/electron-chrome-extensions/preload-build/**",
+      "**/node_modules/electron-chrome-web-store/dist/**"
+    ],
     "directories": {
       "buildResources": "resources",
       "output": "release"

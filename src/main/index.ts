@@ -1,6 +1,6 @@
-import { app, BrowserWindow, Menu, protocol, session, shell } from 'electron';
+import { app, BrowserWindow, Menu, dialog, protocol, session, shell } from 'electron';
 import path from 'node:path';
-import { installChromeWebStore } from 'electron-chrome-web-store';
+import fs from 'node:fs';
 import { registerIpc } from './ipc';
 import { BrowserManager } from './browser-manager';
 import { SettingsStore } from './settings-store';
@@ -50,16 +50,23 @@ async function bootstrap(): Promise<void> {
   // Enable "Add to Chrome" flow on chromewebstore.google.com — intercepts the
   // inline-install click, pulls the .crx through the public update2 endpoint,
   // unpacks it, and registers the extension with the session.
-  try {
-    await installChromeWebStore({ session: defaultSession });
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.warn('Chrome Web Store bridge failed to initialize:', err);
-  }
+  //
+  // Loaded lazily so a bug or missing file in the web-store module can't
+  // prevent the browser window from opening.
+  void (async () => {
+    try {
+      const mod = await import('electron-chrome-web-store');
+      await mod.installChromeWebStore({ session: defaultSession });
+    } catch (err) {
+      logStartupWarning('Chrome Web Store bridge failed to initialize', err);
+    }
+  })();
 
   // Seed default extensions (ad blocker) on first launch. Fire-and-forget so
   // we don't block window creation on a network call.
-  void extensions.seedDefaultsIfNeeded().catch(() => undefined);
+  void extensions.seedDefaultsIfNeeded().catch((err) => {
+    logStartupWarning('Failed to seed default extensions', err);
+  });
 
   browser.createWindow({ private: false });
 
@@ -103,11 +110,49 @@ if (!app.requestSingleInstanceLock()) {
     }
   });
   bootstrap().catch((err) => {
-    // eslint-disable-next-line no-console
-    console.error('Failed to start Clover:', err);
-    app.quit();
+    fatalStartupError(err);
   });
 }
 
-// Keep TS happy about unused import.
-void path;
+function fatalStartupError(err: unknown): void {
+  const message = err instanceof Error ? `${err.message}\n\n${err.stack ?? ''}` : String(err);
+  // eslint-disable-next-line no-console
+  console.error('Failed to start Clover:', err);
+  try {
+    const logPath = path.join(app.getPath('userData'), 'clover-startup.log');
+    fs.mkdirSync(path.dirname(logPath), { recursive: true });
+    fs.appendFileSync(logPath, `[${new Date().toISOString()}] ${message}\n\n`);
+  } catch {
+    /* ignore log write errors */
+  }
+  try {
+    dialog.showErrorBox(
+      'Clover failed to start',
+      `${message}\n\nA copy of this error was written to clover-startup.log in the user-data folder.`
+    );
+  } catch {
+    /* dialog may not be available if app isn't ready */
+  }
+  app.quit();
+}
+
+function logStartupWarning(label: string, err: unknown): void {
+  // eslint-disable-next-line no-console
+  console.warn(`${label}:`, err);
+  try {
+    const logPath = path.join(app.getPath('userData'), 'clover-startup.log');
+    fs.mkdirSync(path.dirname(logPath), { recursive: true });
+    fs.appendFileSync(
+      logPath,
+      `[${new Date().toISOString()}] WARN ${label}: ${
+        err instanceof Error ? err.stack ?? err.message : String(err)
+      }\n\n`
+    );
+  } catch {
+    /* ignore */
+  }
+}
+
+process.on('uncaughtException', (err) => {
+  fatalStartupError(err);
+});
