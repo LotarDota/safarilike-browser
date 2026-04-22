@@ -37,7 +37,7 @@ export class HistoryStore extends EventEmitter {
   }
 
   record(input: Omit<HistoryItem, 'id' | 'visitedAt'>): HistoryItem | null {
-    if (!input.url || input.url.startsWith('about:') || input.url.startsWith('safarilike:')) {
+    if (!input.url || input.url.startsWith('about:') || input.url.startsWith('clover:')) {
       return null;
     }
     const item: HistoryItem = {

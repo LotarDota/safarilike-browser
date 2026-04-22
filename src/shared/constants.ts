@@ -37,7 +37,7 @@ export const DEFAULT_SEARCH_ENGINES: SearchEngine[] = [
 ];
 
 export const DEFAULT_SETTINGS: AppSettings = {
-  homepage: 'safarilike://newtab',
+  homepage: 'clover://newtab',
   newTabPage: 'start',
   defaultSearchEngineId: 'duckduckgo',
   searchEngines: DEFAULT_SEARCH_ENGINES,
@@ -62,4 +62,4 @@ export const DEFAULT_SETTINGS: AppSettings = {
   },
 };
 
-export const INTERNAL_SCHEME = 'safarilike';
+export const INTERNAL_SCHEME = 'clover';

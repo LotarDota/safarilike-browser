@@ -1,9 +1,9 @@
-import type { SafariLikeApi } from '../preload/chrome';
+import type { CloverApi } from '../preload/chrome';
 
 declare global {
   interface Window {
-    safarilike: SafariLikeApi;
-    safarilikeTab?: { version: number };
+    clover: CloverApi;
+    cloverTab?: { version: number };
   }
 }
 

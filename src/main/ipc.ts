@@ -40,7 +40,7 @@ export function registerIpc(deps: IpcDeps): void {
   ipcMain.handle('tabs:create', (event, url?: string) => {
     const windowId = senderWindowId(event.sender.id);
     if (windowId == null) return null;
-    return browser.addTab(windowId, url ?? 'safarilike://newtab')?.id ?? null;
+    return browser.addTab(windowId, url ?? 'clover://newtab')?.id ?? null;
   });
   ipcMain.handle('tabs:close', (event, tabId: number) => {
     const windowId = senderWindowId(event.sender.id);
@@ -160,7 +160,7 @@ export function registerIpc(deps: IpcDeps): void {
   ipcMain.handle('window:new', () => browser.createWindow({ private: false }));
   ipcMain.handle('window:new-private', () => browser.createWindow({ private: true }));
 
-  // Reader — fetch remote HTML via the main process so the custom safarilike://
+  // Reader — fetch remote HTML via the main process so the custom clover://
   // scheme does not need to satisfy cross-origin restrictions in the renderer.
   ipcMain.handle('reader:fetch', async (_event, url: string): Promise<string> => {
     const res = await net.fetch(url, { credentials: 'omit', redirect: 'follow' });

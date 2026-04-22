@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Tiny self-hostable sync server. Stores encrypted blobs per account.
- * The client (SafariLike browser) encrypts client-side with AES-256-GCM
+ * The client (Clover browser) encrypts client-side with AES-256-GCM
  * using a passphrase-derived key — the server never sees plaintext or
  * the passphrase. It only stores a ciphertext+iv+tag tuple.
  *
@@ -87,5 +87,5 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(port, () => {
   // eslint-disable-next-line no-console
-  console.log(`SafariLike sync server on http://localhost:${port} (data: ${dataDir})`);
+  console.log(`Clover sync server on http://localhost:${port} (data: ${dataDir})`);
 });

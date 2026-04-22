@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import type { BookmarkItem, TabState } from '@shared/types';
 import { INTERNAL_SCHEME } from '@shared/constants';
 
-// Ambient types for `window.safarilike` live in declarations.d.ts.
+// Ambient types for `window.clover` live in declarations.d.ts.
 
 interface WindowState {
   id: number;
@@ -12,7 +12,7 @@ interface WindowState {
   tabs: TabState[];
 }
 
-const api = window.safarilike;
+const api = window.clover;
 
 function normalizeToUrl(input: string, template: string): string {
   const trimmed = input.trim();

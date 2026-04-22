@@ -56,7 +56,7 @@ export class SyncManager extends EventEmitter {
   }
 
   private setPassphrase(passphrase: string): void {
-    const derived = crypto.scryptSync(passphrase, 'safarilike-sync', 32);
+    const derived = crypto.scryptSync(passphrase, 'clover-sync', 32);
     this.cachedKey = derived;
     try {
       fs.mkdirSync(path.dirname(this.keyPath), { recursive: true });

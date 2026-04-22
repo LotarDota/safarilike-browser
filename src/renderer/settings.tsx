@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import type { AppSettings, ExtensionInfo, SyncSettings } from '@shared/types';
 
-const api = window.safarilike;
+const api = window.clover;
 
 type Tab = 'general' | 'search' | 'appearance' | 'privacy' | 'extensions' | 'sync';
 

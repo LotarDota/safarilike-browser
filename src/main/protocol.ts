@@ -5,7 +5,7 @@ import { rendererIndex } from './paths';
 import { INTERNAL_SCHEME } from '../shared/constants';
 
 /**
- * Maps `safarilike://<page>` URLs to bundled renderer entry points so that
+ * Maps `clover://<page>` URLs to bundled renderer entry points so that
  * new tabs, settings, reader mode, etc. can be reached the way Safari maps
  * `apple://settings`.
  */

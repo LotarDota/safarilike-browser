@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import type { BookmarkItem, HistoryItem, AppSettings } from '@shared/types';
 import { INTERNAL_SCHEME } from '@shared/constants';
 
-const api = window.safarilike;
+const api = window.clover;
 
 const NewTab: React.FC = () => {
   const [bookmarks, setBookmarks] = useState<BookmarkItem[]>([]);

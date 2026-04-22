@@ -1,5 +1,6 @@
 import { app, BrowserWindow, Menu, protocol, session, shell } from 'electron';
 import path from 'node:path';
+import { installChromeWebStore } from 'electron-chrome-web-store';
 import { registerIpc } from './ipc';
 import { BrowserManager } from './browser-manager';
 import { SettingsStore } from './settings-store';
@@ -45,6 +46,17 @@ async function bootstrap(): Promise<void> {
   Menu.setApplicationMenu(buildAppMenu(browser));
 
   await extensions.loadInstalledExtensions();
+
+  // Enable "Add to Chrome" flow on chromewebstore.google.com — intercepts the
+  // inline-install click, pulls the .crx through the public update2 endpoint,
+  // unpacks it, and registers the extension with the session.
+  try {
+    await installChromeWebStore({ session: defaultSession });
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn('Chrome Web Store bridge failed to initialize:', err);
+  }
+
   browser.createWindow({ private: false });
 
   app.on('activate', () => {
@@ -72,7 +84,7 @@ app.on('window-all-closed', () => {
   }
 });
 
-app.setAppUserModelId('dev.lotardota.safarilike');
+app.setAppUserModelId('dev.lotardota.clover');
 
 // Prevent second instance; focus the first window instead.
 if (!app.requestSingleInstanceLock()) {
@@ -88,7 +100,7 @@ if (!app.requestSingleInstanceLock()) {
   });
   bootstrap().catch((err) => {
     // eslint-disable-next-line no-console
-    console.error('Failed to start SafariLike:', err);
+    console.error('Failed to start Clover:', err);
     app.quit();
   });
 }

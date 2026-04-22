@@ -1,5 +1,5 @@
 {
-  "name": "safarilike-browser",
+  "name": "clover-browser",
   "version": "0.1.0",
   "description": "A Safari-like web browser for Windows 11, built with Electron + Chromium.",
   "author": "LotarDota <pooonavi@gmail.com>",
@@ -22,6 +22,7 @@
   "dependencies": {
     "@mozilla/readability": "^0.5.0",
     "electron-chrome-extensions": "^4.3.0",
+    "electron-chrome-web-store": "^0.13.0",
     "electron-store": "^8.2.0"
   },
   "devDependencies": {
@@ -43,8 +44,8 @@
     "vite": "^5.3.1"
   },
   "build": {
-    "appId": "dev.lotardota.safarilike",
-    "productName": "SafariLike",
+    "appId": "dev.lotardota.clover",
+    "productName": "Clover",
     "files": [
       "dist/**",
       "resources/**",
@@ -56,10 +57,20 @@
     },
     "win": {
       "target": [
-        { "target": "nsis", "arch": ["x64"] },
-        { "target": "portable", "arch": ["x64"] }
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
       ],
-      "artifactName": "SafariLike-${version}-${arch}.${ext}"
+      "artifactName": "Clover-${version}-${arch}.${ext}"
     },
     "nsis": {
       "oneClick": false,
@@ -67,7 +78,9 @@
       "perMachine": false
     },
     "linux": {
-      "target": ["AppImage"],
+      "target": [
+        "AppImage"
+      ],
       "category": "Network"
     }
   }

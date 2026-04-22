@@ -1,4 +1,4 @@
-# SafariLike
+# Clover
 
 A Safari-inspired desktop web browser for **Windows 11**, built with
 [Electron](https://www.electronjs.org/) and Chromium. Brings Safari's
@@ -42,7 +42,7 @@ full theme token set (light, dark, and private-browsing variants).
 ```bash
 # clone and install
 git clone https://github.com/LotarDota/safarilike-browser.git
-cd safarilike-browser
+cd clover-browser
 npm install
 
 # run in dev (Vite + tsc --watch + Electron)
@@ -70,7 +70,7 @@ src/
 │   ├── download-manager.ts  # Downloads tracking
 │   ├── extensions-manager.ts# Chrome extension loader
 │   ├── sync-manager.ts      # Encrypted sync client
-│   ├── protocol.ts          # `safarilike://` internal scheme
+│   ├── protocol.ts          # `clover://` internal scheme
 │   └── menu.ts              # Application menu
 ├── preload/           # Context-bridged IPC surfaces
 ├── renderer/          # React UI (chrome, new tab, settings, reader)

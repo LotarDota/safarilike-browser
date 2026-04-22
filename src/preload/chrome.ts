@@ -95,6 +95,6 @@ const api = {
   },
 };
 
-contextBridge.exposeInMainWorld('safarilike', api);
+contextBridge.exposeInMainWorld('clover', api);
 
-export type SafariLikeApi = typeof api;
+export type CloverApi = typeof api;
