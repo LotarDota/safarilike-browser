@@ -126,6 +126,15 @@ export function registerIpc(deps: IpcDeps): void {
     const win = windowId != null ? BrowserWindow.fromId(windowId) : null;
     return extensions.installFromFolder(win ?? undefined);
   });
+  ipcMain.handle('extensions:install-from-store', async (_event, extensionId: string) =>
+    extensions.installFromStore(extensionId)
+  );
+  ipcMain.handle('extensions:open-store', (event) => {
+    const windowId = senderWindowId(event.sender.id);
+    if (windowId != null) {
+      browser.addTab(windowId, 'https://chromewebstore.google.com/');
+    }
+  });
   ipcMain.handle('extensions:uninstall', async (_event, id: string) => {
     await extensions.uninstall(id);
     return true;

@@ -1,12 +1,18 @@
 import { Session, app, dialog, BrowserWindow } from 'electron';
+import { installExtension } from 'electron-chrome-web-store';
 import { EventEmitter } from 'node:events';
 import fs from 'node:fs';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import type { ExtensionInfo } from '../shared/types';
 
+// uBlock Origin Lite (the MV3-compatible build). Pre-installed on first run so
+// users get ad blocking out of the box instead of needing to open the store.
+const DEFAULT_EXTENSION_IDS = ['ddkjiahejlhfcafbddmgiahcphecmpfh'];
+
 interface ExtensionsFile {
   installed: ExtensionInfo[];
+  defaultsSeeded?: boolean;
 }
 
 /**
@@ -63,6 +69,61 @@ export class ExtensionsManager extends EventEmitter {
 
   async loadInstalledExtensions(): Promise<void> {
     this.attachToSession(this.defaultSession);
+  }
+
+  async seedDefaultsIfNeeded(): Promise<void> {
+    if (this.cache.defaultsSeeded) return;
+    for (const id of DEFAULT_EXTENSION_IDS) {
+      try {
+        await this.installFromStore(id);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.warn(`Skipped seeding default extension ${id}:`, err);
+      }
+    }
+    this.cache.defaultsSeeded = true;
+    this.writeRegistry();
+  }
+
+  async installFromStore(extensionId: string): Promise<ExtensionInfo | null> {
+    const result = await installExtension(extensionId, {
+      session: this.defaultSession,
+      loadExtensionOptions: { allowFileAccess: true },
+    }) as unknown;
+
+    // electron-chrome-web-store resolves once the extension has been unpacked
+    // and registered with the session. We inspect the session's loaded list
+    // to recover the on-disk path and manifest for our own bookkeeping.
+    const loaded = this.defaultSession.getAllExtensions().find((e) => e.id === extensionId);
+    if (!loaded) {
+      // eslint-disable-next-line no-console
+      console.warn('installExtension returned but extension is not loaded:', extensionId, result);
+      return null;
+    }
+
+    const manifestPath = path.join(loaded.path, 'manifest.json');
+    const manifest = fs.existsSync(manifestPath)
+      ? (JSON.parse(fs.readFileSync(manifestPath, 'utf8')) as {
+          name?: string;
+          version?: string;
+          description?: string;
+        })
+      : {};
+
+    const info: ExtensionInfo = {
+      id: loaded.id,
+      name: manifest.name ?? loaded.name ?? extensionId,
+      version: manifest.version ?? loaded.version ?? '0.0.0',
+      description: manifest.description,
+      enabled: true,
+      icon: null,
+      path: loaded.path,
+    };
+    this.cache.installed = this.cache.installed.filter((e) => e.id !== info.id);
+    this.cache.installed.push(info);
+    this.writeRegistry();
+    this.emit('changed', this.list());
+    return info;
   }
 
   list(): ExtensionInfo[] {

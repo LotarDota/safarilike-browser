@@ -57,6 +57,10 @@ async function bootstrap(): Promise<void> {
     console.warn('Chrome Web Store bridge failed to initialize:', err);
   }
 
+  // Seed default extensions (ad blocker) on first launch. Fire-and-forget so
+  // we don't block window creation on a network call.
+  void extensions.seedDefaultsIfNeeded().catch(() => undefined);
+
   browser.createWindow({ private: false });
 
   app.on('activate', () => {
