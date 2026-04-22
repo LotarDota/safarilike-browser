@@ -90,6 +90,9 @@ const api = {
     newWindow: (): Promise<void> => ipcRenderer.invoke('window:new'),
     newPrivate: (): Promise<void> => ipcRenderer.invoke('window:new-private'),
   },
+  reader: {
+    fetch: (url: string): Promise<string> => ipcRenderer.invoke('reader:fetch', url),
+  },
 };
 
 contextBridge.exposeInMainWorld('safarilike', api);

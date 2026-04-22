@@ -11,8 +11,9 @@ async function renderReader(): Promise<void> {
   if (!src || !target) return;
 
   try {
-    const res = await fetch(src, { credentials: 'omit' });
-    const html = await res.text();
+    const html = window.safarilike?.reader
+      ? await window.safarilike.reader.fetch(src)
+      : await (await fetch(src, { credentials: 'omit' })).text();
     const doc = new DOMParser().parseFromString(html, 'text/html');
     // Normalize relative URLs so images/links resolve when embedded here.
     const base = doc.createElement('base');

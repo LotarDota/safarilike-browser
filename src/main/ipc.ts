@@ -1,4 +1,4 @@
-import { ipcMain, BrowserWindow } from 'electron';
+import { ipcMain, BrowserWindow, net } from 'electron';
 import type { BrowserManager } from './browser-manager';
 import type { SettingsStore } from './settings-store';
 import type { BookmarksStore } from './bookmarks-store';
@@ -159,4 +159,12 @@ export function registerIpc(deps: IpcDeps): void {
   });
   ipcMain.handle('window:new', () => browser.createWindow({ private: false }));
   ipcMain.handle('window:new-private', () => browser.createWindow({ private: true }));
+
+  // Reader — fetch remote HTML via the main process so the custom safarilike://
+  // scheme does not need to satisfy cross-origin restrictions in the renderer.
+  ipcMain.handle('reader:fetch', async (_event, url: string): Promise<string> => {
+    const res = await net.fetch(url, { credentials: 'omit', redirect: 'follow' });
+    if (!res.ok) throw new Error(`Fetch failed: ${res.status} ${res.statusText}`);
+    return res.text();
+  });
 }
