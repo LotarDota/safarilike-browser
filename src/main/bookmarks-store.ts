@@ -1,7 +1,7 @@
 import Store from 'electron-store';
 import { EventEmitter } from 'node:events';
 import { randomUUID } from 'node:crypto';
-import type { BookmarkItem } from '@shared/types';
+import type { BookmarkItem } from '../shared/types';
 
 interface BookmarksFile {
   items: BookmarkItem[];

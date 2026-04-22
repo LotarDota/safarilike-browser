@@ -4,7 +4,7 @@
     "module": "CommonJS",
     "moduleResolution": "Node",
     "target": "ES2022",
-    "outDir": "dist/preload",
+    "outDir": "dist",
     "rootDir": "src",
     "sourceMap": true,
     "types": ["node"]

@@ -1,7 +1,7 @@
 import { Session, BrowserWindow, shell } from 'electron';
 import { EventEmitter } from 'node:events';
 import { randomUUID } from 'node:crypto';
-import type { DownloadItem as DownloadState } from '@shared/types';
+import type { DownloadItem as DownloadState } from '../shared/types';
 
 export class DownloadManager extends EventEmitter {
   private downloads = new Map<string, DownloadState>();

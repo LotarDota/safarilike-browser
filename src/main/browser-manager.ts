@@ -13,8 +13,8 @@ import type { BookmarksStore } from './bookmarks-store';
 import type { HistoryStore } from './history-store';
 import type { ExtensionsManager } from './extensions-manager';
 import { preloadPath, rendererIndex } from './paths';
-import type { TabState } from '@shared/types';
-import { INTERNAL_SCHEME } from '@shared/constants';
+import type { TabState } from '../shared/types';
+import { INTERNAL_SCHEME } from '../shared/constants';
 
 interface ManagerOpts {
   settings: SettingsStore;

@@ -2,7 +2,7 @@ import { Session, net } from 'electron';
 import { pathToFileURL } from 'node:url';
 import path from 'node:path';
 import { rendererIndex } from './paths';
-import { INTERNAL_SCHEME } from '@shared/constants';
+import { INTERNAL_SCHEME } from '../shared/constants';
 
 /**
  * Maps `safarilike://<page>` URLs to bundled renderer entry points so that

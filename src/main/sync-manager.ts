@@ -6,7 +6,7 @@ import path from 'node:path';
 import type { SettingsStore } from './settings-store';
 import type { BookmarksStore } from './bookmarks-store';
 import type { HistoryStore } from './history-store';
-import type { BookmarkItem, HistoryItem, SyncSettings } from '@shared/types';
+import type { BookmarkItem, HistoryItem, SyncSettings } from '../shared/types';
 
 interface SyncPayload {
   version: 1;

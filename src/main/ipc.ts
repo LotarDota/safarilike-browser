@@ -6,7 +6,7 @@ import type { HistoryStore } from './history-store';
 import type { DownloadManager } from './download-manager';
 import type { ExtensionsManager } from './extensions-manager';
 import type { SyncManager } from './sync-manager';
-import type { SyncSettings } from '@shared/types';
+import type { SyncSettings } from '../shared/types';
 
 interface IpcDeps {
   browser: BrowserManager;

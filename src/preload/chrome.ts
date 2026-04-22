@@ -7,7 +7,7 @@ import type {
   HistoryItem,
   SyncSettings,
   TabState,
-} from '@shared/types';
+} from '../shared/types';
 
 interface WindowState {
   id: number;

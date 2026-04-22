@@ -1,7 +1,7 @@
 import Store from 'electron-store';
 import { EventEmitter } from 'node:events';
-import type { AppSettings } from '@shared/types';
-import { DEFAULT_SETTINGS } from '@shared/constants';
+import type { AppSettings } from '../shared/types';
+import { DEFAULT_SETTINGS } from '../shared/constants';
 
 export class SettingsStore extends EventEmitter {
   private store: Store<AppSettings>;

@@ -3,7 +3,7 @@ import { EventEmitter } from 'node:events';
 import fs from 'node:fs';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
-import type { ExtensionInfo } from '@shared/types';
+import type { ExtensionInfo } from '../shared/types';
 
 interface ExtensionsFile {
   installed: ExtensionInfo[];

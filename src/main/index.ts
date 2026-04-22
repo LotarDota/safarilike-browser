@@ -10,7 +10,7 @@ import { ExtensionsManager } from './extensions-manager';
 import { SyncManager } from './sync-manager';
 import { buildAppMenu } from './menu';
 import { registerInternalProtocol } from './protocol';
-import { INTERNAL_SCHEME } from '@shared/constants';
+import { INTERNAL_SCHEME } from '../shared/constants';
 
 protocol.registerSchemesAsPrivileged([
   {

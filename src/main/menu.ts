@@ -1,6 +1,6 @@
 import { Menu, MenuItemConstructorOptions, BrowserWindow, shell } from 'electron';
 import type { BrowserManager } from './browser-manager';
-import { INTERNAL_SCHEME } from '@shared/constants';
+import { INTERNAL_SCHEME } from '../shared/constants';
 
 export function buildAppMenu(browser: BrowserManager): Menu {
   const template: MenuItemConstructorOptions[] = [

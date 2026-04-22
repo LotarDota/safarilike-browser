@@ -1,7 +1,7 @@
 import Store from 'electron-store';
 import { EventEmitter } from 'node:events';
 import { randomUUID } from 'node:crypto';
-import type { HistoryItem } from '@shared/types';
+import type { HistoryItem } from '../shared/types';
 
 interface HistoryFile {
   items: HistoryItem[];
