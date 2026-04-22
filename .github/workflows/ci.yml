@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint-typecheck-build:
+    name: Lint · Typecheck · Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Build
+        run: npm run build
+
+  package-windows:
+    name: Package Windows installer
+    runs-on: windows-latest
+    needs: lint-typecheck-build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Generate Windows icon
+        shell: pwsh
+        run: |
+          choco install imagemagick -y --no-progress
+          magick resources/icon.svg -define icon:auto-resize=16,24,32,48,64,128,256 resources/icon.ico
+      - name: Build and package
+        run: npm run package:win
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SafariLike-Windows-x64
+          path: |
+            release/*.exe
+            release/*.nsis.7z
+          if-no-files-found: error

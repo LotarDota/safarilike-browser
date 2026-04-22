@@ -1,0 +1,59 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #f5f1e8;
+  color: #1c1c1e;
+  font-family: 'Iowan Old Style', 'Palatino', 'Georgia', serif;
+  line-height: 1.7;
+  font-size: 18px;
+}
+
+@media (prefers-color-scheme: dark) {
+  html,
+  body {
+    background: #1c1c1e;
+    color: #e5e5ea;
+  }
+}
+
+#reader-content {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 48px 32px 96px;
+}
+
+#reader-content h1 {
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 0 0 16px;
+}
+
+#reader-content .byline {
+  color: rgba(0, 0, 0, 0.5);
+  margin-bottom: 32px;
+}
+
+@media (prefers-color-scheme: dark) {
+  #reader-content .byline {
+    color: rgba(255, 255, 255, 0.5);
+  }
+}
+
+#reader-content p {
+  margin: 0 0 20px;
+}
+
+#reader-content img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+#reader-content a {
+  color: #0a84ff;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
