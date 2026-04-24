@@ -58,6 +58,22 @@ python run.py
 python -m botva_autoclicker
 ```
 
+### Сборка в EXE (Windows)
+
+Чтобы собрать один `.exe` файл, который можно запускать без установки Python:
+
+```bash
+# Установить зависимости (если ещё не установлены)
+pip install -r requirements.txt
+
+# Собрать EXE
+python build_exe.py
+```
+
+Готовый файл: `dist/BotvaAutoClicker.exe`
+
+Просто скопируйте `BotvaAutoClicker.exe` на любой компьютер с Windows и запустите двойным кликом. Python устанавливать **не нужно**. Google Chrome должен быть установлен.
+
 ### Как пользоваться
 
 1. Запустите программу (`python run.py`)
@@ -154,6 +170,7 @@ safarilike-browser/
 │   └── gui.py                      # Tkinter GUI
 ├── botva-autoclicker.user.js       # Userscript для Tampermonkey
 ├── run.py                          # Быстрый запуск: python run.py
+├── build_exe.py                    # Сборка в .exe через PyInstaller
 ├── requirements.txt                # Python-зависимости
 ├── README.md                       # Документация
 └── LICENSE                         # Лицензия MIT
