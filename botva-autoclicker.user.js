@@ -288,8 +288,8 @@
           // Try navigating to heal page
           clickLink('Жилище') || clickLink('жилище');
           await delay(settings.globalDelay);
-          clickButton('Лечиться') || clickButton('Выпить');
-          stats.heals++;
+          var healed2 = clickButton('Лечиться') || clickButton('Выпить');
+          if (healed2) stats.heals++;
         }
         updateStatsUI();
       }
@@ -427,7 +427,7 @@
     if (!enabled || !isRunning) return;
     timers[name] = setTimeout(async () => {
       await fn();
-      scheduleModule(name, fn, interval, settings[name + 'Enabled']);
+      scheduleModule(name, fn, settings[name + 'Interval'], settings[name + 'Enabled']);
     }, interval + rnd(0, settings.randomDelay));
   }
 
@@ -1091,7 +1091,7 @@
     v = document.getElementById('ac-global-delay');
     if (v) settings.globalDelay = (parseFloat(v.value) || 2) * 1000;
     v = document.getElementById('ac-random-delay');
-    if (v) settings.randomDelay = (parseFloat(v.value) || 3) * 1000;
+    if (v) { var rd = parseFloat(v.value); settings.randomDelay = (rd >= 0 ? rd : 3) * 1000; }
     v = document.getElementById('ac-search-delay');
     if (v) settings.attackSearchDelay = (parseFloat(v.value) || 3) * 1000;
 
