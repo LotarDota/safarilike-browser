@@ -17,7 +17,6 @@ import argparse
 import csv
 import sys
 import time
-from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Optional
 from urllib.request import urlopen, Request
@@ -131,7 +130,10 @@ def collect_stats(start_id: int, end_id: int, team_filter: Optional[str] = None)
     total_conflicts = 0
     skipped = 0
 
-    for conflict_id in range(start_id, end_id + 1):
+    for i, conflict_id in enumerate(range(start_id, end_id + 1)):
+        if i > 0:
+            time.sleep(REQUEST_DELAY)
+
         print(f"  Загружаю conflict={conflict_id}...", end="", flush=True)
         html = fetch_page(conflict_id)
 
@@ -184,9 +186,6 @@ def collect_stats(start_id: int, end_id: int, team_filter: Optional[str] = None)
             s.protection += player["protection"]
             s.valor_points += player["valor"]
             s.fights_list.append(conflict_id)
-
-        if conflict_id < end_id:
-            time.sleep(REQUEST_DELAY)
 
     return stats, total_conflicts, skipped
 
