@@ -17,35 +17,41 @@
 ## Использование
 
 ```bash
-# Базовый запуск — указать диапазон ID конфликтов
+# Самый простой способ — взять последние N боёв (автоматически находит диапазон)
+python3 botva_land_stats.py --last 20
+
+# Последние 20 боёв только для одной команды
+python3 botva_land_stats.py --last 20 --team свинтусы
+python3 botva_land_stats.py --last 20 --team барантусы
+
+# Или указать конкретный диапазон ID конфликтов
 python3 botva_land_stats.py --from 201830 --to 201851
 
-# Фильтр по команде
-python3 botva_land_stats.py --from 201830 --to 201851 --team свинтусы
-python3 botva_land_stats.py --from 201830 --to 201851 --team барантусы
-
 # Экспорт в CSV (открывается в Excel)
-python3 botva_land_stats.py --from 201830 --to 201851 --csv stats.csv
+python3 botva_land_stats.py --last 20 --csv stats.csv
 
 # Сортировка по разным полям
-python3 botva_land_stats.py --from 201830 --to 201851 --sort damage
-python3 botva_land_stats.py --from 201830 --to 201851 --sort kills
-python3 botva_land_stats.py --from 201830 --to 201851 --sort valor
+python3 botva_land_stats.py --last 20 --sort damage
+python3 botva_land_stats.py --last 20 --sort kills
+python3 botva_land_stats.py --last 20 --sort valor
 
 # Изменить задержку между запросами (по умолчанию 0.5 сек)
-python3 botva_land_stats.py --from 201830 --to 201851 --delay 1.0
+python3 botva_land_stats.py --last 20 --delay 1.0
 ```
 
 ## Параметры
 
 | Параметр  | Описание                                         |
 |-----------|--------------------------------------------------|
-| `--from`  | ID первого конфликта (обязательно)                |
-| `--to`    | ID последнего конфликта (обязательно)             |
+| `--last`  | Взять последние N конфликтов (автоопределение)    |
+| `--from`  | ID первого конфликта                             |
+| `--to`    | ID последнего конфликта                          |
 | `--team`  | Фильтр по названию команды                       |
 | `--sort`  | Сортировка: fights/kills/damage/healing/protection/valor/name |
 | `--csv`   | Путь для экспорта в CSV файл                     |
 | `--delay` | Задержка между запросами в секундах (по умолч. 0.5) |
+
+Нужно указать либо `--last N`, либо оба параметра `--from` и `--to`.
 
 ## Как узнать ID конфликтов
 
@@ -54,4 +60,4 @@ python3 botva_land_stats.py --from 201830 --to 201851 --delay 1.0
 https://avatar.botva.ru/fight_log.php?conflict=201841
 ```
 
-Число после `conflict=` — это ID. Конфликты идут последовательно, без привязки к датам на странице.
+Число после `conflict=` — это ID. Конфликты идут последовательно. При использовании `--last` скрипт сам найдёт последний доступный ID.
