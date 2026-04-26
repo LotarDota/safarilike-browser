@@ -7,8 +7,9 @@
 убийства и очки доблести.
 
 Использование:
+    python3 botva_land_stats.py --last 20
+    python3 botva_land_stats.py --last 20 --team свинтусы
     python3 botva_land_stats.py --from 201830 --to 201851
-    python3 botva_land_stats.py --from 201830 --to 201851 --team свинтусы
     python3 botva_land_stats.py --from 201830 --to 201851 --csv output.csv
     python3 botva_land_stats.py --from 201830 --to 201851 --sort damage
 """
@@ -25,6 +26,7 @@ from urllib.error import URLError, HTTPError
 
 FIGHT_LOG_URL = "https://avatar.botva.ru/fight_log.php?conflict={conflict_id}"
 REQUEST_DELAY = 0.5  # секунды между запросами
+SEARCH_STEP = 50  # шаг для поиска последнего конфликта
 
 
 @dataclass
@@ -122,6 +124,46 @@ def parse_fight_log(html: str, conflict_id: int):
     team2_players = parse_table(table2_match.group(1)) if table2_match else []
 
     return battle_name, team1_name, team2_name, team1_players, team2_players
+
+
+def _page_exists(conflict_id: int) -> bool:
+    """Быстрая проверка: существует ли лог боя (без скачивания тела)."""
+    import http.client
+    import ssl
+    try:
+        ctx = ssl.create_default_context()
+        conn = http.client.HTTPSConnection("avatar.botva.ru", timeout=10, context=ctx)
+        conn.request("HEAD", f"/fight_log.php?conflict={conflict_id}",
+                     headers={"User-Agent": "Mozilla/5.0"})
+        resp = conn.getresponse()
+        status = resp.status
+        conn.close()
+        return status == 200
+    except Exception:
+        return False
+
+
+def find_latest_conflict() -> int:
+    """Находит ID последнего доступного конфликта."""
+    print("  Поиск последнего конфликта...", end="", flush=True)
+
+    # Быстрый поиск: шагаем по SEARCH_STEP от известной точки
+    probe = 201800
+    while _page_exists(probe + SEARCH_STEP):
+        probe += SEARCH_STEP
+        time.sleep(0.2)
+
+    # Точный поиск в диапазоне [probe+1, probe+SEARCH_STEP)
+    latest = probe
+    for cid in range(probe + 1, probe + SEARCH_STEP):
+        if _page_exists(cid):
+            latest = cid
+        else:
+            break
+        time.sleep(0.2)
+
+    print(f" {latest}")
+    return latest
 
 
 def collect_stats(start_id: int, end_id: int, team_filter: Optional[str] = None):
@@ -290,12 +332,16 @@ def main():
         description="Сбор статистики боёв за земли — Ботва Онлайн (Аватар)"
     )
     parser.add_argument(
-        "--from", dest="start_id", type=int, required=True,
+        "--from", dest="start_id", type=int, default=None,
         help="ID первого конфликта"
     )
     parser.add_argument(
-        "--to", dest="end_id", type=int, required=True,
+        "--to", dest="end_id", type=int, default=None,
         help="ID последнего конфликта"
+    )
+    parser.add_argument(
+        "--last", dest="last_n", type=int, default=None,
+        help="Взять последние N конфликтов (автоматически находит диапазон)"
     )
     parser.add_argument(
         "--team", type=str, default=None,
@@ -317,6 +363,9 @@ def main():
 
     args = parser.parse_args()
 
+    if args.last_n is None and (args.start_id is None or args.end_id is None):
+        parser.error("Укажите --last N или оба параметра --from и --to")
+
     global REQUEST_DELAY
     REQUEST_DELAY = args.delay
 
@@ -324,6 +373,13 @@ def main():
     print(f"║  Статистика боёв за земли — Ботва Онлайн        ║")
     print(f"║  Сервер: Аватар                                 ║")
     print(f"╚══════════════════════════════════════════════════╝")
+
+    if args.last_n is not None:
+        end_id = find_latest_conflict()
+        start_id = end_id - args.last_n + 1
+        args.start_id = start_id
+        args.end_id = end_id
+
     print(f"\nДиапазон: {args.start_id} — {args.end_id}")
     if args.team:
         print(f"Фильтр по команде: {args.team}")
