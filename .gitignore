@@ -1,0 +1,23 @@
+## .NET / Visual Studio
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+.vscode/
+.idea/
+
+## CEF runtime / caches
+CefCache/
+cef.log
+
+## Build artifacts
+*.dll
+*.exe
+*.pdb
+
+## OS cruft
+.DS_Store
+Thumbs.db
